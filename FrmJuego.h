@@ -1,4 +1,4 @@
-#pragma onceç
+#pragma once
 #include "Juego.h"
 
 namespace MobimientoSprites {
@@ -40,15 +40,13 @@ namespace MobimientoSprites {
 	private: System::Windows::Forms::FlowLayoutPanel^ pnlSprite;
 	private: System::Windows::Forms::Timer^ timer1;
 	private: System::ComponentModel::IContainer^ components;
-	protected:
 	
 #pragma region Windows Form Designer generated code
 		/// <summary>
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
 		/// </summary>
-		void InitializeComponent(void)
-		{
+		void InitializeComponent(void) {
 			this->components = (gcnew System::ComponentModel::Container());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
 			this->pnlSprite = (gcnew System::Windows::Forms::FlowLayoutPanel());
@@ -67,7 +65,7 @@ namespace MobimientoSprites {
 			this->pnlSprite->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->pnlSprite->Location = System::Drawing::Point(0, 0);
 			this->pnlSprite->Name = L"pnlSprite";
-			this->pnlSprite->Size = System::Drawing::Size(1044, 575);
+			this->pnlSprite->Size = System::Drawing::Size(1532, 686);
 			this->pnlSprite->TabIndex = 0;
 			// 
 			// timer1
@@ -78,17 +76,17 @@ namespace MobimientoSprites {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1044, 575);
+			this->ClientSize = System::Drawing::Size(1532, 686);
 			this->Controls->Add(this->pnlSprite);
 			this->Controls->Add(this->panel1);
 			this->KeyPreview = true;
 			this->Name = L"FrmJuego";
 			this->Text = L"Caballero";
 			this->WindowState = System::Windows::Forms::FormWindowState::Maximized;
+			this->Load += gcnew System::EventHandler(this, &FrmJuego::FrmJuego_Load);
 			this->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &FrmJuego::FrmJuego_KeyDown);
 			this->KeyUp += gcnew System::Windows::Forms::KeyEventHandler(this, &FrmJuego::FrmSprite_KeyUp);
 			this->ResumeLayout(false);
-
 		}
 
 #pragma endregion
@@ -96,14 +94,6 @@ namespace MobimientoSprites {
 		String^ ruta = Path::Combine(Application::StartupPath, nombre);
 		if(!File::Exists(ruta)) ruta = nombre;
 		return gcnew Bitmap(ruta);
-	}
-
-	System::Void FrmSprite_Load(System::Object^ sender, System::EventArgs^ e) {
-		caballero = cargarImagen("cabellero_new.png");
-		fuego = cargarImagen("fuego_new.png");
-		//enemigo = cargarImagen("enemigo_new.png");
-		//fondo = cargarImagen("fondo_paisaje_01.png");
-		teclaPresionada = Ninguno;
 	}
 
 	System::Void timer1_tick(System::Object^ sender, System::EventArgs^ e) 	{
@@ -114,11 +104,14 @@ namespace MobimientoSprites {
 		juego->mover(teclaPresionada, ancho, alto);
 		Graphics^ canvas = pnlSprite->CreateGraphics();
 		BufferedGraphics^ buffer = BufferedGraphicsManager::Current->Allocate(canvas, pnlSprite->ClientRectangle);
-		buffer->Graphics->DrawImage(fondo, 0, 0, ancho, alto);
+		buffer->Graphics->Clear(Color::White);
 		juego->dibujar(buffer->Graphics, caballero, enemigo, fuego);
 		buffer->Render(canvas);
 		delete buffer;
 		//lblEliminados->Text = Convert::ToString(juego->getEliminados());
+
+		this->timer1->Interval = 50; 
+		this->timer1->Enabled = true;
 	}
 	
 	private: System::Void FrmJuego_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {
@@ -134,6 +127,13 @@ namespace MobimientoSprites {
 		if (e->KeyCode == Keys::Left || e->KeyCode == Keys::A) { if (teclaPresionada == Izquierda) teclaPresionada = Ninguno; }
 		if (e->KeyCode == Keys::Right || e->KeyCode == Keys::D) { if (teclaPresionada == Derecha) teclaPresionada = Ninguno; }
 		if (e->KeyCode == Keys::Up || e->KeyCode == Keys::W) { if (teclaPresionada == Arriba) teclaPresionada = Ninguno; }
+	}
+	private: System::Void FrmJuego_Load(System::Object^ sender, System::EventArgs^ e) {
+		caballero = cargarImagen("Sprites\\cabellero_new.png");
+		fuego = cargarImagen("Sprites\\fuego_new.png");
+		//enemigo = cargarImagen("enemigo_new.png");
+		//fondo = cargarImagen("fondo_paisaje_01.png");
+		teclaPresionada = Ninguno;
 	}
 };
 }
